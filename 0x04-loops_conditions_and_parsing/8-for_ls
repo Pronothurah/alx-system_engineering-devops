@@ -1,2 +1,11 @@
 #!/usr/bin/env bash
 # A Bash script that displays contents of current directory conditionally
+
+for filename in *
+do
+    if [[ -f $filename ]]
+    then
+    name=$(echo "$filename" | cut -d'-' -f2-)
+    echo $name
+    fi
+done
