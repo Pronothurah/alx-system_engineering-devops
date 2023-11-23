@@ -3,7 +3,7 @@
 
 file="/etc/passwd"
 
-while IFS=":" read -r username x userid home _
+while IFS=":" read -r username userid home _
 do
     echo "$username:$userid:$home"
 done < "$file"
