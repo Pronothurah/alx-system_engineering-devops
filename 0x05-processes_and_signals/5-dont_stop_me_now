@@ -8,7 +8,8 @@
 process_id=$(pgrep -f '4-to_infinity_and_beyond')
 
 # Check if the process ID was found
-if [ -n "$process_id" ]; then
+if [ -n "$process_id" ]
+then
     # Send a SIGINT signal to the process to terminate it gracefully
     kill -s SIGINT "$process_id"
 fi
