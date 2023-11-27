@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# script that kills the process 7-highlander
+
+# Use pkill to stop the '7-highlander' process
+pkill -f "7-highlander"
+
+# Check if the process is still running after attempting to stop it
+if pgrep -f "7-highlander" > /dev/null
+then
+    # If the process still running # Forcefully kill the process
+    pkill -9 -f "7-highlander"
+fi
