@@ -1,3 +1,19 @@
 #!/usr/bin/env bash
-# a Bash script that executes conditioanlly.
+# A script that displays To infinity and beyond indefinitely with a sleep 2 in between each iteration
+# and dissplays I am invincible!!! when receiving a SIGTERM signal
+
+# Function to handle SIGTERM signal
+sigterm_handler() {
+    echo "I am invincible!!!"
+}
+
+# Trap SIGTERM signal and call the handler function
+trap 'sigterm_handler' SIGTERM
+
+# Loop displaying "To infinity and beyond" indefinitely with a sleep of 2 seconds
+while true
+do
+    echo "To infinity and beyond"
+    sleep 2
+done
 
