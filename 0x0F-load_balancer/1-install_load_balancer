@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
-
-# Define variables
-DOMAIN_NAME='itantonial.tech'
-WEB_SERVER_1='52.86.50.144'
-WEB_SERVER_2='52.3.250.50'
-HAPROXY_CONFIG='/etc/haproxy/haproxy.cfg'
-INIT_FILE='/etc/default/haproxy'
-
-# Update package lists and install HAProxy
+#Update package lists and install HAProxy - load balancer
 apt-get update
 apt-get -y install --no-install-recommends software-properties-common
 add-apt-repository -y ppa:vbernat/haproxy-2.4
 apt-get -y install haproxy
 
-# Define HAProxy configuration
+#Load balancer configuration
+DOMAIN_NAME='itantonial.tech'
+WEB_SERVER_1='52.86.50.144'
+WEB_SERVER_2='52.3.250.50'
+CONFIG_FILE='/etc/haproxy/haproxy.cfg'
+INIT_FILE='/etc/default/haproxy'
+
+
+#Define HAProxy configuration
 HAPROXY_LB_CONFIG="
 #--$DOMAIN_NAME-params-begin--
 backend $DOMAIN_NAME-backend
     balance roundrobin
-    server web1 $WEB_SERVER_1 check
-    server web2 $WEB_SERVER_2 check
+    server web1 $WEB_SERVER_1:80 check
+    server web2 $WEB_SERVER_2:80 check
 
 frontend $DOMAIN_NAME-frontend
     bind *:80
@@ -28,21 +28,36 @@ frontend $DOMAIN_NAME-frontend
 #--$DOMAIN_NAME-params-end--
 "
 
-# Backup the original HAProxy configuration file
-cp "$HAPROXY_CONFIG"{,.backup}
+#Backup the original HAProxy configuration file
+cp "$CONFIG_FILE"{,.backup}
 
-# Enable HAProxy in init script if not already enabled
-if ! grep -q '^ENABLED=[01]$' "$INIT_FILE"; then
-    echo 'ENABLED=1' >> "$INIT_FILE"
+[ -f "$INIT_FILE" ] || touch "$INIT_FILE"
+[ -f "$CONFIG_FILE" ] || touch "$CONFIG_FILE"
+
+CONFIG_WORDS=$(grep -Eco "$DOMAIN_NAME-backend" < $CONFIG_FILE)
+
+if [ "$(grep -Eco '^ENABLED=[01]$' < $INIT_FILE)" -gt 0 ]; then
+        sed -i 's/^ENABLED=0$/ENABLED=1/' "$INIT_FILE"
+else
+        echo 'ENABLED=1' >> $INIT_FILE
 fi
 
-# Update HAProxy configuration
-sed -i "/^#--$DOMAIN_NAME-params-begin--/,/^#--$DOMAIN_NAME-params-end--/d" "$HAPROXY_CONFIG"
-echo -e "$HAPROXY_LB_CONFIG" >> "$HAPROXY_CONFIG"
-
-# Restart HAProxy to apply the changes
-if [ "$(pgrep -c haproxy)" -le 0 ]; then
-    service haproxy start
+if [ "$CONFIG_WORDS" -eq 0 ]; then
+        echo -e "$HAPROXY_LB_CONFIG" >> $CONFIG_FILE
 else
-    service haproxy restart
+        start_tkn="#--$DOMAIN_NAME-params-begin--"
+        end_tkn="#--$DOMAIN_NAME-params-end--"
+        a=$(grep -onE "$start_tkn" < "$CONFIG_FILE" | cut -d : -f1)
+        b=$(grep -onE "$end_tkn" < "$CONFIG_FILE" | cut -d : -f1)
+        a=$((a - 1))
+        b=$((b + 1))
+        sed -i "$a,$b"d "$CONFIG_FILE"
+        echo -en "$HAPROXY_LB_CONFIG" >> $CONFIG_FILE
+fi
+
+#Validate HAProxy configuration
+if [ "$(pgrep -c haproxy)" -le 0 ]; then
+        service haproxy start
+else
+        service haproxy restart
 fi
