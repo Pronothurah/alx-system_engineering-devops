@@ -1,5 +1,0 @@
-sed: can't read /etc/nginx/sites-enabled/default: No such file or directory
-sed: can't read /etc/nginx/sites-enabled/default: No such file or directory
-./0-nginx_likes_port_80: line 5: /run/nginx.pid: Permission denied
-./0-nginx_likes_port_80: line 6: nginx: command not found
-./0-nginx_likes_port_80: line 7: /run/nginx.pid: Permission denied
