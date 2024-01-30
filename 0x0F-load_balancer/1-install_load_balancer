@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# Define variables
+DOMAIN_NAME='itantonial.tech'
+WEB_SERVER_1='52.86.50.144'
+WEB_SERVER_2='52.3.250.50'
+HAPROXY_CONFIG='/etc/haproxy/haproxy.cfg'
+INIT_FILE='/etc/default/haproxy'
+
+# Update package lists and install HAProxy
+apt-get update
+apt-get -y install --no-install-recommends software-properties-common
+add-apt-repository -y ppa:vbernat/haproxy-2.4
+apt-get -y install haproxy
+
+# Define HAProxy configuration
+HAPROXY_LB_CONFIG="
+#--$DOMAIN_NAME-params-begin--
+backend $DOMAIN_NAME-backend
+    balance roundrobin
+    server web1 $WEB_SERVER_1 check
+    server web2 $WEB_SERVER_2 check
+
+frontend $DOMAIN_NAME-frontend
+    bind *:80
+    mode http
+    default_backend $DOMAIN_NAME-backend
+#--$DOMAIN_NAME-params-end--
+"
+
+# Backup the original HAProxy configuration file
+cp "$HAPROXY_CONFIG"{,.backup}
+
+# Enable HAProxy in init script if not already enabled
+if ! grep -q '^ENABLED=[01]$' "$INIT_FILE"; then
+    echo 'ENABLED=1' >> "$INIT_FILE"
+fi
+
+# Update HAProxy configuration
+sed -i "/^#--$DOMAIN_NAME-params-begin--/,/^#--$DOMAIN_NAME-params-end--/d" "$HAPROXY_CONFIG"
+echo -e "$HAPROXY_LB_CONFIG" >> "$HAPROXY_CONFIG"
+
+# Restart HAProxy to apply the changes
+if [ "$(pgrep -c haproxy)" -le 0 ]; then
+    service haproxy start
+else
+    service haproxy restart
+fi
