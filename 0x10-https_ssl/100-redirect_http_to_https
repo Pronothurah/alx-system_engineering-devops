@@ -42,9 +42,10 @@ frontend itantonial-frontend
         default_backend itantonial-backend
 
 frontend itantonial-frontend-https
-        bind *:443 ssl crt /etc/haproxy/certs/itantonial.tech.pem
+        bind *:443 ssl crt /etc/haproxy/certs/www.itantonial.tech.pem
         http-request set-header X-Forwarded-Proto https
         default_backend itantonial-backend
+
 backend itantonial-backend
         balance roundrobin
         server 478926-web-01 52.86.50.144:80 check
