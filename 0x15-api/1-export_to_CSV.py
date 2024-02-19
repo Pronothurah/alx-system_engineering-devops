@@ -10,14 +10,20 @@ REST_API = "https://jsonplaceholder.typicode.com"
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1].isdigit():
-        user_id = int(sys.argv[1])
-        req = requests.get(f'{REST_API}/users/{user_id}').json()
-        task_req = requests.get(f'{REST_API}/todos').json()
-        username = req.get('username')
-        tasks = [task for task in task_req if task.get('userId') == user_id]
-        with open(f'{user_id}.csv', mode='w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"])
+        user_id = sys.argv[1]
+        url_user = f'{REST_API}/users/{user_id}'
+        res = requests.get(url_user)
+        user_name = res.json().get('username')
+
+        task_url = f'{url_user}/todos'
+        tasks_res = requests.get(task_url)
+        tasks = tasks_res.json()
+
+        with open(f'{user_id}.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
             for task in tasks:
-                writer.writerow([user_id, username, task.get('completed'), task.get('title')])
+                completed = task.get('completed')
+                title_task = task.get('title')
+                writer.writerow([user_id, user_name, completed, title_task])
+
         print(f'Data exported to {user_id}.csv successfully.')
