@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """gathers employee data from api."""
 
-import re
 import requests
 import sys
 
