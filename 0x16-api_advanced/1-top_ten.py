@@ -9,15 +9,7 @@ BASE_URL = 'https://www.reddit.com'
 
 
 def top_ten(subreddit):
-    """Queries the Reddit API and prints the titles of the first 10 hot posts
-    listed for a given subreddit.
-
-    Args:
-    subreddit (str): The subreddit to query.
-
-    Returns:
-    None
-    """
+    """Return the top ten of a sub reddit"""
     headers = {"User-Agent": "https://github.com/Pronothurah"}
     params = {"limit": 10}
     url = f"{BASE_URL}/r/{subreddit}/hot.json"

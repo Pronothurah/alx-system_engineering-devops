@@ -9,16 +9,7 @@ BASE_URL = 'https://www.reddit.com'
 
 
 def number_of_subscribers(subreddit):
-    """queries the Reddit API and returns the number of subscribers
-        for a given subreddit
-
-        Args:
-        subreddit (str): The subreddit to query.
-
-        Returns:
-            int: The number of subscribers for the subreddit.
-                Returns 0 if the subreddit is invalid.
-    """
+    """Returns total subscribers of a sub reddit"""
     def number_of_subscribers(subreddit):
         """Returns total subscribers of a sub reddit"""
         headers = {"User-Agent": "https://github.com/Pronothurah"}
