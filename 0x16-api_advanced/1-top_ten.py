@@ -2,7 +2,9 @@
 """queries the Reddit API and returns the top 10 posts"""
 import requests
 
+
 BASE_URL = 'https://www.reddit.com'
+
 
 def top_ten(subreddit):
     """Queries the Reddit API and prints the titles of the first 10 hot posts
@@ -24,14 +26,20 @@ def top_ten(subreddit):
             'Edg/97.0.1072.62'
         ])
     }
+    sort = 'top'
+    limit = 10
     res = requests.get(
-        f'{BASE_URL}/r/{subreddit}/hot/.json',
+        '{}/r/{}/.json?sort={}&limit={}'.format(
+            BASE_URL,
+            subreddit,
+            sort,
+            limit
+        ),
         headers=api_headers,
         allow_redirects=False
     )
     if res.status_code == 200:
-        data = res.json()
-        for post in data['data']['children'][:10]:
+        for post in res.json()['data']['children'][0:10]:
             print(post['data']['title'])
     else:
         print(None)
