@@ -19,21 +19,11 @@ def number_of_subscribers(subreddit):
             int: The number of subscribers for the subreddit.
                 Returns 0 if the subreddit is invalid.
     """
-    api_headers = {
-        'Accept': 'application/json',
-        'User-Agent': ' '.join([
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-            'AppleWebKit/537.36 (KHTML, like Gecko)',
-            'Chrome/97.0.4692.71',
-            'Safari/537.36',
-            'Edg/97.0.1072.62'
-        ])
-    }
-    res = requests.get(
-        f'{BASE_URL}/r/{subreddit}/about/.json',
-        headers=api_headers,
-        allow_redirects=False
-    )
-    if res.status_code == 200:
-        return res.json()['data']['subscribers']
-    return 0
+    def number_of_subscribers(subreddit):
+        """Returns total subscribers of a sub reddit"""
+        headers = {"User-Agent": "https://github.com/Pronothurah"}
+        response = requests.get(url=BASE_URL,
+                                headers=headers, allow_redirects=False)
+        if response.status_code == 200:
+            return response.json().get("data").get("subscribers")
+        return 0
