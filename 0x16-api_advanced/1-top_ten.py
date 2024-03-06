@@ -10,7 +10,7 @@ BASE_URL = 'https://www.reddit.com'
 
 def top_ten(subreddit):
     """Return the top ten of a sub reddit"""
-    headers = {"User-Agent": "https://github.com/Pronothurah"}
+    headers = {"User-Agent": "MyRedditBot/1.0 (onsongo)"}
     params = {"limit": 10}
     url = f"{BASE_URL}/r/{subreddit}/hot.json"
     response = requests.get(url, headers=headers,

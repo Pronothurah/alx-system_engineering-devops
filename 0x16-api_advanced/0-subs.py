@@ -8,7 +8,7 @@ def number_of_subscribers(subreddit):
     def number_of_subscribers(subreddit):
         """Returns total subscribers of a sub reddit"""
         url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-        headers = {"User-Agent": "https://github.com/Pronothurah"}
+        headers = {"User-Agent": "MyRedditBot/1.0 (onsongo)"}
         response = requests.get(url=url,
                                 headers=headers, allow_redirects=False)
         if response.status_code == 200:
