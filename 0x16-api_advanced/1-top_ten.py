@@ -4,6 +4,8 @@ import requests
 
 
 BASE_URL = 'https://www.reddit.com'
+'''Reddit's base API URL.
+'''
 
 
 def top_ten(subreddit):
@@ -16,30 +18,14 @@ def top_ten(subreddit):
     Returns:
     None
     """
-    api_headers = {
-        'Accept': 'application/json',
-        'User-Agent': ' '.join([
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-            'AppleWebKit/537.36 (KHTML, like Gecko)',
-            'Chrome/97.0.4692.71',
-            'Safari/537.36',
-            'Edg/97.0.1072.62'
-        ])
-    }
-    sort = 'top'
-    limit = 10
-    res = requests.get(
-        '{}/r/{}/.json?sort={}&limit={}'.format(
-            BASE_URL,
-            subreddit,
-            sort,
-            limit
-        ),
-        headers=api_headers,
-        allow_redirects=False
-    )
-    if res.status_code == 200:
-        for post in res.json()['data']['children'][0:10]:
-            print(post['data']['title'])
+    headers = {"User-Agent": "https://github.com/Pronothurah"}
+    params = {"limit": 10}
+    url = f"{BASE_URL}/r/{subreddit}/hot.json"
+    response = requests.get(url, headers=headers,
+                            params=params, allow_redirects=False)
+    if response.status_code == 200:
+        data = response.json().get("data")
+        for post in data.get("children")[:10]:
+            print(post.get("data").get("title"))
     else:
-        print(None)
+        print("None")
