@@ -3,15 +3,11 @@
 import requests
 
 
-BASE_URL = 'https://www.reddit.com'
-'''Reddit's base API URL.
-'''
-
-
 def number_of_subscribers(subreddit):
     """Returns total subscribers of a sub reddit"""
     def number_of_subscribers(subreddit):
         """Returns total subscribers of a sub reddit"""
+        BASE_URL = "https://www.reddit.com/r/{}/about.json".format(subreddit)
         headers = {"User-Agent": "https://github.com/Pronothurah"}
         response = requests.get(url=BASE_URL,
                                 headers=headers, allow_redirects=False)

@@ -14,7 +14,7 @@ def recurse(subreddit, hot_list=[]):
 
 
 def recurse_util(subreddit, hot_list=[], after=None):
-    """An util for the recurse function"""
+    """A util for the recurse function"""
     if not hot_list:
         hot_list = []
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
