@@ -3,6 +3,11 @@
 import requests
 
 
+BASE_URL = 'https://www.reddit.com'
+'''Reddit's base API URL.
+'''
+
+
 def number_of_subscribers(subreddit):
     """queries the Reddit API and returns the number of subscribers
         for a given subreddit
@@ -14,17 +19,21 @@ def number_of_subscribers(subreddit):
             int: The number of subscribers for the subreddit.
                 Returns 0 if the subreddit is invalid.
     """
-    url = f"https://www.reddit.com/r/{subreddit}/about.json"
-
-    headers = {
-        "User-Agent": "https://github.com/Pronothurah"
+    api_headers = {
+        'Accept': 'application/json',
+        'User-Agent': ' '.join([
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'AppleWebKit/537.36 (KHTML, like Gecko)',
+            'Chrome/97.0.4692.71',
+            'Safari/537.36',
+            'Edg/97.0.1072.62'
+        ])
     }
-
-    response = requests.get(url, headers=headers)
-
-    if response.status_code == 200:
-        data = response.json()
-        subscribers = data["data"]["subscribers"]
-        return subscribers
-    else:
-        return 0
+    res = requests.get(
+        f'{BASE_URL}/r/{subreddit}/about/.json',
+        headers=api_headers,
+        allow_redirects=False
+    )
+    if res.status_code == 200:
+        return res.json()['data']['subscribers']
+    return 0
